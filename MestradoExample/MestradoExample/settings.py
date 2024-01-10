@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_bootstrap4',
+    'MestradoExample'
 ]
 
 MIDDLEWARE = [
@@ -120,7 +121,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     # Other static file locations...
-    os.path.join(BASE_DIR, 'app_name/static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 STATIC_URL = 'static/'
@@ -137,7 +138,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-DEFAULT_APP_CONFIG = 'humaclotjunior.apps.HumaclotjuniorConfig'
+DEFAULT_APP_CONFIG = 'MestradoExample.apps.MestradoExampleConfig'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
