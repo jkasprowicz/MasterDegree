@@ -17,7 +17,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #444242;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -84,11 +84,10 @@ p {
 
 </style>
 </head>
-<!-- ... Other HTML code ... -->
 
 <body>
     <div class="container">
-        <h1>Detecção de Leucocitos - Upload Fotos</h1>
+        <h1>Detecção de Leucócitos - Upload Fotos</h1>
         <form id="uploadForm" enctype="multipart/form-data" class="dropzone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
             <input type="file" name="file" id="fileInput" accept="image/*" />
             <label for="fileInput">Clique ou Drop Suas Fotos Para Quantificação</label>
@@ -98,7 +97,7 @@ p {
             <p id="report"></p>
         </div>
     </div>
-    
+
     <script>
         function uploadImage() {
             const fileInput = document.getElementById('fileInput');
@@ -109,7 +108,7 @@ p {
             const formData = new FormData(uploadForm);
 
             // Make a POST request to your backend (replace with actual endpoint)
-            fetch('/upload', {
+            fetch('{% url "upload_image" %}', {
                 method: 'POST',
                 body: formData
             })
@@ -123,7 +122,8 @@ p {
         }
     </script>
 </body>
-</html>
+{% endblock %}
+
 
 
 {% endblock content %}
