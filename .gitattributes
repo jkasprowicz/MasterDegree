@@ -1,0 +1,2 @@
+MestradoExample/models/model_0004999.pth filter=lfs diff=lfs merge=lfs -text
+MestradoExample/models/model_final.pth filter=lfs diff=lfs merge=lfs -text
