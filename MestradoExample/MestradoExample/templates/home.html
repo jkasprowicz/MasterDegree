@@ -1,126 +1,218 @@
 {% extends 'base.html' %}
 
-
-{% block title %} {% endblock title %}
+{% block title %}Leukocyte Detection{% endblock title %}
 
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<!-- ... Other HTML code ... -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leukocyte Detection</title>
 
-<style>
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #444242;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #444242;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
 
-.container {
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
+        .container {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
-h1 {
-    color: #333;
-}
+        h1 {
+            color: #333;
+        }
 
-form {
-    margin-top: 20px;
-}
+        form {
+            margin-top: 20px;
+        }
 
-#fileInput {
-    display: none;
-}
+        #fileInput {
+            display: none;
+        }
 
-.dropzone {
-    border: 2px dashed #4caf50;
-    padding: 20px;
-    cursor: pointer;
-}
+        dropzone {
+            border: 2px dashed #4caf50;
+            padding: 20px;
+            cursor: pointer;
+        }
 
-.dropzone:hover {
-    background-color: #f0f8ff;
-}
+        dropzone:hover {
+            background-color: #f0f8ff;
+        }
 
-button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-button:hover {
-    background-color: #45a049;
-}
+        button:hover {
+            background-color: #45a049;
+        }
 
-#resultContainer {
-    margin-top: 30px;
-}
+        #resultContainer {
+            margin-top: 30px;
+        }
 
-h2 {
-    color: #333;
-}
+        h2 {
+            color: #333;
+        }
 
-p {
-    color: #555;
-}
+        p {
+            color: #555;
+        }
 
-</style>
+        #loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25px;
+            margin-left: -25px;
+            z-index: 9999;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>Detecção de Leucócitos - Upload Fotos</h1>
-        <form id="uploadForm" enctype="multipart/form-data" class="dropzone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)">
-            <input type="file" name="file" id="fileInput" accept="image/*" />
-            <label for="fileInput">Clique ou Drop Suas Fotos Para Quantificação</label>
+        <h1>Leukocyte Detection - Upload Photos</h1>
+        <form id="csv-upload-form" method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
+            {% csrf_token %}
+            <div class="background-box">
+                <div class="container-box">
+                    <input type="text" id="plate_name" name="plate_name" placeholder="Slide - Name" required>
+                    <br>
+                    <p>Select Files:</p>
+                    <div id="drop-zone"></div>
+                    <input type="file" name="image" id="image" accept=".jpeg, .png" multiple>
+                    <button class="submit-button" id="submit-button">Send</button>
+                    <div id="loader" style="display: none;"></div>
+                </div>
+            </div>
         </form>
-        <div id="resultContainer" style="display: none;">
-            <h2>Inference Results</h2>
-            <p id="report"></p>
-        </div>
+        <div id="output-container">
+            <img id="uploaded-image" src="" alt="Uploaded Image">
+            <div id="bounding-box-container"></div>
+        </div>        
     </div>
-
-    <script>
-        function uploadImage() {
-            const fileInput = document.getElementById('fileInput');
-            const uploadForm = document.getElementById('uploadForm');
-            const resultContainer = document.getElementById('resultContainer');
-            const reportElement = document.getElementById('report');
-
-            const formData = new FormData(uploadForm);
-
-            // Make a POST request to your backend (replace with actual endpoint)
-            fetch('{% url "upload_image" %}', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Display the results
-                resultContainer.style.display = 'block';
-                reportElement.innerText = data.report;
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </body>
+</html>
 
+
+<script>
+const submitButton = document.getElementById('submit-button');
+const form = document.getElementById('csv-upload-form');
+const loader = document.getElementById('loader');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitButton.disabled = true;
+    loader.style.display = 'block';
+
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const readingsData = JSON.parse(data.report);
+
+        console.log(readingsData)
+    
+        // Encode special characters in the image path
+        const encodedImagePath = encodeURI(readingsData.image_path);
+
+        // Display the uploaded image
+        const uploadedImage = document.getElementById('uploaded-image');
+        uploadedImage.src = `/media/${readingsData.image_path}`;
+
+        // Draw bounding boxes on the image
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const imageObj = new Image();
+
+        imageObj.onload = function () {
+            canvas.width = imageObj.width;
+            canvas.height = imageObj.height;
+            ctx.drawImage(imageObj, 0, 0);
+
+            // Draw bounding boxes
+            // Draw bounding boxes and masks on the canvas
+            // Draw bounding boxes on the canvas
+            for (var i = 0; i < readingsData.pred_boxes.length; i++) {
+                var box = readingsData.pred_boxes[i];
+                var score = readingsData.scores[i];
+                const label = readingsData.pred_classes[i]
+
+                console.log(box)
+
+                console.log(score)
+
+                console.log(label)
+
+                // Draw bounding box
+                ctx.strokeStyle = 'green';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+                ctx.stroke();
+
+                // Display score near the bounding box
+                ctx.font = '16px Arial';
+                ctx.fillStyle = 'red';
+                ctx.fillText(`${label}: ${score.toFixed(2)}`, box[0], box[1] - 5);
+
+            }
+
+            // Replace the existing image with the canvas
+            uploadedImage.parentNode.replaceChild(canvas, uploadedImage);
+
+        };
+
+        imageObj.src = encodedImagePath;
+
+        form.style.display = 'none';
+        loader.style.display = 'none';
+    })
+    .catch(error => {
+        console.error(error);
+        loader.style.display = 'none';
+    });
+});
+
+
+
+</script>
+</body>
 {% endblock content %}
