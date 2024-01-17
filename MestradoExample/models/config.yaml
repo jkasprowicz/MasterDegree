@@ -434,13 +434,13 @@ dictitems:
           __immutable__: false
           __new_allowed__: false
           __renamed_keys__: {}
-      WEIGHTS: /content/drive/MyDrive/ColabNotebooks/models/Detectron2_Models/model_final.pth
+      WEIGHTS: /Users/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth
     state:
       __deprecated_keys__: !!set {}
       __immutable__: false
       __new_allowed__: false
       __renamed_keys__: {}
-  OUTPUT_DIR: /content/drive/MyDrive/ColabNotebooks/models/Detectron2_Models
+  OUTPUT_DIR: /Users/joaokasprowicz/MasterDegree/MestradoExample/models
   SEED: -1
   SOLVER: !!python/object/new:detectron2.config.config.CfgNode
     dictitems:
