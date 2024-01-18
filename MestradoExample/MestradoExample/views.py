@@ -9,6 +9,8 @@ from .utils import load_detectron2_model
 from django.http import JsonResponse
 import cv2
 import json
+import os
+from django.conf import settings
 
 def home_view(request):
     return render(request, 'home.html')
@@ -38,20 +40,20 @@ def upload_image(request):
             scores = outputs["instances"].scores.tolist()
             pred_classes = outputs["instances"].pred_classes.tolist()
 
+            image_relative_path = os.path.relpath(image_path, settings.MEDIA_ROOT)
+
+
             # Convert the information to a serializable format
             results = {
                 'pred_boxes': pred_boxes,
                 'scores': scores,
                 'pred_classes': pred_classes,
+                'image_path': image_relative_path            
             }
 
             print(outputs)            
 
-            print(json.dumps({'report': results}))
-
-
-            # Return the results as JSON
-            return JsonResponse({'report': json.dumps(results)})
+            return JsonResponse({'report': results})
         
         form = ImageUploadForm()
 

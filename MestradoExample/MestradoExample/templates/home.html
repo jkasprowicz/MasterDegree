@@ -122,97 +122,106 @@
         <div id="output-container">
             <img id="uploaded-image" src="" alt="Uploaded Image">
             <div id="bounding-box-container"></div>
-        </div>        
+        </div>
     </div>
+
+    <script>
+        const submitButton = document.getElementById('submit-button');
+        const form = document.getElementById('csv-upload-form');
+        const loader = document.getElementById('loader');
+
+        function getClassnameById(classId) {
+            const classMapping = {
+                1: "Mielocito",
+                2: "Metamielocito",
+                3: "Bastao",
+                4: "Segmentado",
+                5: "Monocito",
+                6: "Linfocito",
+                7: "Eosinofilo"
+            };
+
+            return classMapping[classId] || "Unknown";
+        }
+
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitButton.disabled = true;
+            loader.style.display = 'block';
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const readingsData = data.report;
+
+                console.log(readingsData);
+
+
+                const uploadedImage = document.getElementById('uploaded-image');
+                const imagePath = `/media/${readingsData.image_path}`;  // Use the provided image path
+                uploadedImage.src = imagePath;
+
+                // Draw bounding boxes on the image
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const imageObj = new Image();
+
+                imageObj.onload = function () {
+                    canvas.width = imageObj.width;
+                    canvas.height = imageObj.height;
+                    ctx.drawImage(imageObj, 0, 0);
+
+                    // Draw bounding boxes
+                    for (var i = 0; i < readingsData.pred_boxes.length; i++) {
+                        var box = readingsData.pred_boxes[i];
+                        var score = readingsData.scores[i];
+                        const classId = readingsData.pred_classes[i];
+
+                        // Look up the class name based on the class ID
+                        const className = getClassnameById(classId);
+
+                        console.log(box);
+                        console.log(score);
+                        console.log(className);
+
+                        // Draw bounding box
+                        ctx.strokeStyle = 'green';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
+                        ctx.stroke();
+
+                        // Display score and class name near the bounding box
+                        ctx.font = '16px Arial';
+                        ctx.fillStyle = 'red';
+                        ctx.fillText(`${className}: ${score.toFixed(2)}`, box[0], box[1] - 5);
+                    }
+
+
+                    // Replace the existing image with the canvas
+                    uploadedImage.parentNode.replaceChild(canvas, uploadedImage);
+                };
+                imageObj.src = imagePath;
+
+                form.style.display = 'none';
+                loader.style.display = 'none';
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
-
-
-<script>
-const submitButton = document.getElementById('submit-button');
-const form = document.getElementById('csv-upload-form');
-const loader = document.getElementById('loader');
-
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    submitButton.disabled = true;
-    loader.style.display = 'block';
-
-    const formData = new FormData(form);
-
-    fetch(form.action, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        const readingsData = JSON.parse(data.report);
-
-        console.log(readingsData)
-    
-        // Encode special characters in the image path
-        const encodedImagePath = encodeURI(readingsData.image_path);
-
-        // Display the uploaded image
-        const uploadedImage = document.getElementById('uploaded-image');
-        uploadedImage.src = `/media/${readingsData.image_path}`;
-
-        // Draw bounding boxes on the image
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const imageObj = new Image();
-
-        imageObj.onload = function () {
-            canvas.width = imageObj.width;
-            canvas.height = imageObj.height;
-            ctx.drawImage(imageObj, 0, 0);
-
-            // Draw bounding boxes
-            // Draw bounding boxes and masks on the canvas
-            // Draw bounding boxes on the canvas
-            for (var i = 0; i < readingsData.pred_boxes.length; i++) {
-                var box = readingsData.pred_boxes[i];
-                var score = readingsData.scores[i];
-                const label = readingsData.pred_classes[i]
-
-                console.log(box)
-
-                console.log(score)
-
-                console.log(label)
-
-                // Draw bounding box
-                ctx.strokeStyle = 'green';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
-                ctx.stroke();
-
-                // Display score near the bounding box
-                ctx.font = '16px Arial';
-                ctx.fillStyle = 'red';
-                ctx.fillText(`${label}: ${score.toFixed(2)}`, box[0], box[1] - 5);
-
-            }
-
-            // Replace the existing image with the canvas
-            uploadedImage.parentNode.replaceChild(canvas, uploadedImage);
-
-        };
-
-        imageObj.src = encodedImagePath;
-
-        form.style.display = 'none';
-        loader.style.display = 'none';
-    })
-    .catch(error => {
-        console.error(error);
-        loader.style.display = 'none';
-    });
-});
-
-
-
-</script>
-</body>
 {% endblock content %}
