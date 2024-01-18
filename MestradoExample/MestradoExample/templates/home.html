@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leukocyte Detection</title>
+    <title>Detector de Leucócitos</title>
 
     <style>
         body {
@@ -104,17 +104,17 @@
 
 <body>
     <div class="container">
-        <h1>Leukocyte Detection - Upload Photos</h1>
+        <h1>Detector de Leucócitos - Upload Foto</h1>
         <form id="csv-upload-form" method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
             {% csrf_token %}
             <div class="background-box">
                 <div class="container-box">
                     <input type="text" id="plate_name" name="plate_name" placeholder="Slide - Name" required>
                     <br>
-                    <p>Select Files:</p>
+                    <p>Selecionar fotos:</p>
                     <div id="drop-zone"></div>
                     <input type="file" name="image" id="image" accept=".jpeg, .png" multiple>
-                    <button class="submit-button" id="submit-button">Send</button>
+                    <button class="submit-button" id="submit-button">Enviar</button>
                     <div id="loader" style="display: none;"></div>
                 </div>
             </div>
