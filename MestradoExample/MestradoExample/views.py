@@ -40,6 +40,7 @@ def upload_image(request):
             scores = outputs["instances"].scores.tolist()
             pred_classes = outputs["instances"].pred_classes.tolist()
 
+
             image_relative_path = os.path.relpath(image_path, settings.MEDIA_ROOT)
 
 
@@ -50,8 +51,6 @@ def upload_image(request):
                 'pred_classes': pred_classes,
                 'image_path': image_relative_path            
             }
-
-            print(outputs)            
 
             return JsonResponse({'report': results})
         

@@ -132,13 +132,13 @@
 
         function getClassnameById(classId) {
             const classMapping = {
-                1: "Mielocito",
-                2: "Metamielocito",
-                3: "Bastao",
-                4: "Segmentado",
-                5: "Monocito",
-                6: "Linfocito",
-                7: "Eosinofilo"
+                0: "Mielocito",
+                1: "Metamielocito",
+                2: "Bastao",
+                3: "Segmentado",
+                4: "Monocito",
+                5: "Linfocito",
+                6: "Eosinofilo"
             };
 
             return classMapping[classId] || "Unknown";
@@ -165,9 +165,6 @@
                 const data = await response.json();
                 const readingsData = data.report;
 
-                console.log(readingsData);
-
-
                 const uploadedImage = document.getElementById('uploaded-image');
                 const imagePath = `/media/${readingsData.image_path}`;  // Use the provided image path
                 uploadedImage.src = imagePath;
@@ -190,10 +187,6 @@
 
                         // Look up the class name based on the class ID
                         const className = getClassnameById(classId);
-
-                        console.log(box);
-                        console.log(score);
-                        console.log(className);
 
                         // Draw bounding box
                         ctx.strokeStyle = 'green';
