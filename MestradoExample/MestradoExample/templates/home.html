@@ -9,6 +9,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detector de Leucócitos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 
     <style>
         body {
@@ -99,6 +104,12 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .carousel-image {
+            max-width: 100%;
+            height: auto;
+            margin: 5px;  /* Adjust as needed */
+        }
+
     </style>
 </head>
 
@@ -119,9 +130,24 @@
                 </div>
             </div>
         </form>
-        <div id="output-container">
-            <img id="uploaded-image" src="" alt="Uploaded Image">
-            <div id="bounding-box-container"></div>
+        <div class="container">
+            <!-- ... (your existing code) ... -->
+    
+            <div id="output-container" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner"></div>
+                <a class="carousel-control-prev" href="#output-container" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#output-container" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+    
+            <div id="report-container"></div>
+    
+            <!-- ... (your existing code) ... -->
         </div>
     </div>
 
@@ -144,32 +170,30 @@
             return classMapping[classId] || "Unknown";
         }
 
+        function createCarousel(images) {
+            const carouselContainer = document.querySelector('.carousel-inner');
+            const reportContainer = document.getElementById('report-container');
+            reportContainer.innerHTML = ''; // Clear previous report
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            submitButton.disabled = true;
-            loader.style.display = 'block';
+            const classificationCounts = {};
 
-            const formData = new FormData(form);
-
-            try {
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+            images.forEach((imageData, index) => {
+                // Create a wrapper div for each image and bounding box information
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.classList.add('carousel-item');
+                if (index === 0) {
+                    wrapperDiv.classList.add('active');
                 }
 
-                const data = await response.json();
-                const readingsData = data.report;
+                // Create an image element
+                const imgElement = document.createElement('img');
+                imgElement.src = `/media/${imageData.image_path}`;
+                imgElement.alt = `Uploaded Image ${index + 1}`;
+                imgElement.classList.add('d-block', 'w-100');
 
-                const uploadedImage = document.getElementById('uploaded-image');
-                const imagePath = `/media/${readingsData.image_path}`;  // Use the provided image path
-                uploadedImage.src = imagePath;
+                // ... (your existing code to draw bounding boxes) ...
 
-                // Draw bounding boxes on the image
+                // Create a new canvas element
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const imageObj = new Image();
@@ -179,41 +203,81 @@
                     canvas.height = imageObj.height;
                     ctx.drawImage(imageObj, 0, 0);
 
-                    // Draw bounding boxes
-                    for (var i = 0; i < readingsData.pred_boxes.length; i++) {
-                        var box = readingsData.pred_boxes[i];
-                        var score = readingsData.scores[i];
-                        const classId = readingsData.pred_classes[i];
+                    // Draw bounding box
+                    ctx.strokeStyle = 'green';
+                    ctx.lineWidth = 2;
 
-                        // Look up the class name based on the class ID
-                        const className = getClassnameById(classId);
-
-                        // Draw bounding box
-                        ctx.strokeStyle = 'green';
-                        ctx.lineWidth = 2;
+                    imageData.pred_boxes.forEach((box, i) => {
                         ctx.beginPath();
                         ctx.rect(box[0], box[1], box[2] - box[0], box[3] - box[1]);
                         ctx.stroke();
 
-                        // Display score and class name near the bounding box
-                        ctx.font = '16px Arial';
-                        ctx.fillStyle = 'red';
-                        ctx.fillText(`${className}: ${score.toFixed(2)}`, box[0], box[1] - 5);
-                    }
+                        const classId = imageData.pred_classes[i];
+                        const className = getClassnameById(classId);
+                        const score = imageData.scores[i].toFixed(2);
+                        const text = `${className} (${score})`;
+                        ctx.fillStyle = 'green';
+                        ctx.font = '14px Arial';
+                        ctx.fillText(text, box[0], box[1] - 5);
+                    });
 
 
                     // Replace the existing image with the canvas
-                    uploadedImage.parentNode.replaceChild(canvas, uploadedImage);
-                };
-                imageObj.src = imagePath;
+                    wrapperDiv.replaceChild(canvas, imgElement);
 
-                form.style.display = 'none';
-                loader.style.display = 'none';
-            } catch (error) {
-                console.error(error);
-                loader.style.display = 'none';
+                    // Update the report counts
+                    imageData.pred_classes.forEach(classId => {
+                        const className = getClassnameById(classId);
+                        classificationCounts[className] = (classificationCounts[className] || 0) + 1;
+                    });
+
+                    // Update the report
+                    const reportContent = Object.entries(classificationCounts)
+                        .map(([className, count]) => `<p>${className}: ${count}</p>`)
+                        .join('');
+                    reportContainer.innerHTML = `<div class="report-item">${reportContent}</div>`;
+                };
+
+                // Set the image source
+                imageObj.src = `/media/${imageData.image_path}`;
+
+                // Append the image and bounding box container to the wrapper div
+                wrapperDiv.appendChild(imgElement);
+
+                // Append the wrapper div to the carousel
+                carouselContainer.appendChild(wrapperDiv);
+            });
+        }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitButton.disabled = true;
+        loader.style.display = 'block';
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        });
+
+            const data = await response.json();
+            const readingsData = data.report;
+
+            createCarousel(readingsData);  // Pass the array directly
+
+            form.style.display = 'none';
+            loader.style.display = 'none';
+        } catch (error) {
+            console.error(error);
+            loader.style.display = 'none';
+        }
+    });
     </script>
 </body>
 </html>
