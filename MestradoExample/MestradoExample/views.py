@@ -22,9 +22,9 @@ def upload_image(request):
         form = ImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             plate_name = form.cleaned_data['plate_name']
-            images = request.FILES.getlist('image')  # Handle multiple images
+            images = request.FILES.getlist('image')  
 
-            results_list = []  # To store results for each image
+            results_list = [] 
 
             model_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth'
             config_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml'
@@ -34,19 +34,16 @@ def upload_image(request):
                 image_instance = UploadedImage(image=image_file, plate_name=plate_name)
                 image_instance.save()
 
-                # Load model and perform inference
                 image_path = image_instance.image.path
                 image = cv2.imread(image_path)
                 outputs = predictor(image)
 
-                # Extract relevant information from the Instances object
                 pred_boxes = outputs["instances"].pred_boxes.tensor.tolist()
                 scores = outputs["instances"].scores.tolist()
                 pred_classes = outputs["instances"].pred_classes.tolist()
 
                 image_relative_path = os.path.relpath(image_path, settings.MEDIA_ROOT)
 
-                # Convert the information to a serializable format
                 results = {
                     'pred_boxes': pred_boxes,
                     'scores': scores,
@@ -55,8 +52,6 @@ def upload_image(request):
                 }
 
                 results_list.append(results)
-
-                print(results)
 
             
             return JsonResponse({'report': results_list})

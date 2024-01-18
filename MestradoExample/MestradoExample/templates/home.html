@@ -131,8 +131,6 @@
             </div>
         </form>
         <div class="container">
-            <!-- ... (your existing code) ... -->
-    
             <div id="output-container" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner"></div>
                 <a class="carousel-control-prev" href="#output-container" role="button" data-slide="prev">
@@ -146,8 +144,6 @@
             </div>
     
             <div id="report-container"></div>
-    
-            <!-- ... (your existing code) ... -->
         </div>
     </div>
 
@@ -173,27 +169,22 @@
         function createCarousel(images) {
             const carouselContainer = document.querySelector('.carousel-inner');
             const reportContainer = document.getElementById('report-container');
-            reportContainer.innerHTML = ''; // Clear previous report
+            reportContainer.innerHTML = '';
 
             const classificationCounts = {};
 
             images.forEach((imageData, index) => {
-                // Create a wrapper div for each image and bounding box information
                 const wrapperDiv = document.createElement('div');
                 wrapperDiv.classList.add('carousel-item');
                 if (index === 0) {
                     wrapperDiv.classList.add('active');
                 }
 
-                // Create an image element
                 const imgElement = document.createElement('img');
                 imgElement.src = `/media/${imageData.image_path}`;
                 imgElement.alt = `Uploaded Image ${index + 1}`;
                 imgElement.classList.add('d-block', 'w-100');
 
-                // ... (your existing code to draw bounding boxes) ...
-
-                // Create a new canvas element
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 const imageObj = new Image();
@@ -203,7 +194,6 @@
                     canvas.height = imageObj.height;
                     ctx.drawImage(imageObj, 0, 0);
 
-                    // Draw bounding box
                     ctx.strokeStyle = 'green';
                     ctx.lineWidth = 2;
 
@@ -222,29 +212,23 @@
                     });
 
 
-                    // Replace the existing image with the canvas
                     wrapperDiv.replaceChild(canvas, imgElement);
 
-                    // Update the report counts
                     imageData.pred_classes.forEach(classId => {
                         const className = getClassnameById(classId);
                         classificationCounts[className] = (classificationCounts[className] || 0) + 1;
                     });
 
-                    // Update the report
                     const reportContent = Object.entries(classificationCounts)
                         .map(([className, count]) => `<p>${className}: ${count}</p>`)
                         .join('');
                     reportContainer.innerHTML = `<div class="report-item">${reportContent}</div>`;
                 };
 
-                // Set the image source
                 imageObj.src = `/media/${imageData.image_path}`;
 
-                // Append the image and bounding box container to the wrapper div
                 wrapperDiv.appendChild(imgElement);
 
-                // Append the wrapper div to the carousel
                 carouselContainer.appendChild(wrapperDiv);
             });
         }
@@ -269,7 +253,7 @@
             const data = await response.json();
             const readingsData = data.report;
 
-            createCarousel(readingsData);  // Pass the array directly
+            createCarousel(readingsData);  
 
             form.style.display = 'none';
             loader.style.display = 'none';
