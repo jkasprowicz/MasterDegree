@@ -26,39 +26,54 @@
             justify-content: center;
             height: 100vh;
         }
-
+    
         .container {
             width: 80%;
             max-width: 600px;
             padding: 20px;
-            background-color: #fff;
+            background-color: #c3c3c3;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            margin-bottom: 20px; /* Added space between containers */
         }
 
+    
         h1 {
-            color: #333;
+            color: #000000;
         }
-
+    
         form {
             margin-top: 20px;
         }
-
+    
         #fileInput {
             display: none;
         }
-
+    
         dropzone {
             border: 2px dashed #4caf50;
-            padding: 20px;
+            padding: 1rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-        }
+            margin-top: 10px; /* Added space between dropzone and input file */
+            transition: transform 0.2s;
 
+        }
+    
         dropzone:hover {
             background-color: #f0f8ff;
         }
-
+    
+        input[type="text"] {
+            border: 1px solid #4caf50; /* Added border to text input */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 10px; /* Added space between input text and dropzone */
+            transition: transform 0.2s;
+            flex-direction: column;
+        }
+    
         button {
             margin-top: 10px;
             padding: 10px;
@@ -68,23 +83,26 @@
             border-radius: 4px;
             cursor: pointer;
         }
-
+    
         button:hover {
             background-color: #45a049;
         }
-
+    
         #resultContainer {
             margin-top: 30px;
         }
-
+    
         h2 {
             color: #333;
         }
-
+    
         p {
-            color: #555;
+            color: #000000;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 20px;
         }
-
+    
         #loader {
             border: 8px solid #f3f3f3; /* Light grey */
             border-top: 8px solid #3498db; /* Blue */
@@ -99,38 +117,48 @@
             margin-left: -25px;
             z-index: 9999;
         }
-
+    
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+    
         .carousel-image {
             max-width: 100%;
             height: auto;
             margin: 5px;  /* Adjust as needed */
         }
 
+        #button-mais,
+        #output-container,
+        #report-container,
+        #container-report {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>Detector de Leucócitos - Upload Foto</h1>
+        <h1>Detector de Leucócitos</h1>
         <form id="csv-upload-form" method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
             {% csrf_token %}
             <div class="background-box">
                 <div class="container-box">
-                    <input type="text" id="plate_name" name="plate_name" placeholder="Slide - Name" required>
+                    <input type="text" id="plate_name" name="plate_name" placeholder="Nome da Lâmina" required>
                     <br>
-                    <p>Selecionar fotos:</p>
+                    <p>Selecionar Fotos:</p>
                     <div id="drop-zone"></div>
                     <input type="file" name="image" id="image" accept=".jpeg, .png" multiple>
+                    <br>
                     <button class="submit-button" id="submit-button">Enviar</button>
+                    <br>
                     <div id="loader" style="display: none;"></div>
                 </div>
             </div>
         </form>
-        <div class="container">
+        <br>
+        <div class="container" id="container-report">
             <div id="output-container" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner"></div>
                 <a class="carousel-control-prev" href="#output-container" role="button" data-slide="prev">
@@ -142,8 +170,10 @@
                     <span class="sr-only">Next</span>
                 </a>
             </div>
-    
             <div id="report-container"></div>
+        </div>
+        <div id="button-mais">
+            <button onclick="window.location.reload();">Enviar Novamente</button>
         </div>
     </div>
 
@@ -254,6 +284,12 @@
             const readingsData = data.report;
 
             createCarousel(readingsData);  
+
+            // Show the hidden elements after successful submission
+            document.getElementById('button-mais').style.display = 'block';
+            document.getElementById('output-container').style.display = 'block';
+            document.getElementById('report-container').style.display = 'block';
+            document.getElementById('container-report').style.display = 'block';
 
             form.style.display = 'none';
             loader.style.display = 'none';
