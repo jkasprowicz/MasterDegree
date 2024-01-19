@@ -182,17 +182,17 @@
         const form = document.getElementById('csv-upload-form');
         const loader = document.getElementById('loader');
 
-        function getClassnameById(classId) {
-            const classMapping = {
-                0: "Mielocito",
-                1: "Metamielocito",
-                2: "Bastao",
-                3: "Segmentado",
-                4: "Monocito",
-                5: "Linfocito",
-                6: "Eosinofilo"
-            };
+        const classMapping = {
+            0: "Mielocito",
+            1: "Metamielocito",
+            2: "Bastao",
+            3: "Segmentado",
+            4: "Monocito",
+            5: "Linfocito",
+            6: "Eosinofilo"
+        };
 
+        function getClassnameById(classId) {
             return classMapping[classId] || "Unknown";
         }
 
@@ -202,6 +202,10 @@
             reportContainer.innerHTML = '';
 
             const classificationCounts = {};
+
+            Object.values(classMapping).forEach(className => {
+                classificationCounts[className] = 0;
+            });
 
             images.forEach((imageData, index) => {
                 const wrapperDiv = document.createElement('div');

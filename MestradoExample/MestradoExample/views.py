@@ -17,10 +17,11 @@ from math import sqrt
 def home_view(request):
     return render(request, 'home.html')
 
-def resize_image(img_path, output_path, size):
+def resize_image(img_path, size):
     img = cv2.imread(img_path)
     img_resized = cv2.resize(img, size)
-    cv2.imwrite(output_path, img_resized)
+    cv2.imwrite(img_path, img_resized)
+
 
 def calculate_distance(box1, box2):
     # Calculate the Euclidean distance between the centers of two bounding boxes
@@ -49,17 +50,16 @@ def upload_image(request):
 
                 image_path = image_instance.image.path
 
-                resized_image_path = os.path.splitext(image_path)[0] + "_resized.jpg"
-                resize_image(image_path, resized_image_path, (512, 512))
+                resize_image(image_path, (512, 512))
 
-                image = cv2.imread(resized_image_path)
+                image = cv2.imread(image_path)
                 outputs = predictor(image)
 
                 pred_boxes_raw = outputs["instances"].pred_boxes.tensor.tolist()
                 scores_raw = outputs["instances"].scores.tolist()
                 pred_classes_raw = outputs["instances"].pred_classes.tolist()
 
-                image_relative_path = os.path.relpath(resized_image_path, settings.MEDIA_ROOT)
+                image_relative_path = os.path.relpath(image_path, settings.MEDIA_ROOT)
 
                 cell_info = {}
 
