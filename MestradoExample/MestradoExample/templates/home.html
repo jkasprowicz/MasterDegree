@@ -33,7 +33,7 @@
             padding: 20px;
             background-color: #c3c3c3;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
             text-align: center;
             margin-bottom: 20px; /* Added space between containers */
         }
@@ -66,7 +66,7 @@
         }
     
         input[type="text"] {
-            border: 1px solid #4caf50; /* Added border to text input */
+            border: 1px solid; /* Added border to text input */
             padding: 1rem;
             border-radius: 0.5rem;
             margin-top: 10px; /* Added space between input text and dropzone */
@@ -135,6 +135,17 @@
         #container-report {
             display: none;
         }
+
+
+        .container-dashed {
+            border: 2px dashed #000000;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 10px;
+            width: 600px;
+            display: inline-block;
+
+        }
     </style>
 </head>
 
@@ -147,9 +158,11 @@
                 <div class="container-box">
                     <input type="text" id="plate_name" name="plate_name" placeholder="Nome da Lâmina" required>
                     <br>
-                    <p>Selecionar Fotos:</p>
-                    <div id="drop-zone"></div>
-                    <input type="file" name="image" id="image" accept=".jpeg, .png" multiple>
+                    <div class="container-dashed">
+                        <p>Selecionar Fotos:</p>
+                        <div id="drop-zone"></div>
+                        <input type="file" name="image" id="image" accept=".jpeg, .png" multiple>
+                    </div>                    
                     <br>
                     <button class="submit-button" id="submit-button">Enviar</button>
                     <br>
@@ -158,7 +171,11 @@
             </div>
         </form>
         <br>
+    </div>
+
+    <div class="container-out">
         <div class="container" id="container-report">
+            <h1>Resultados</h1>
             <div id="output-container" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner"></div>
                 <a class="carousel-control-prev" href="#output-container" role="button" data-slide="prev">
@@ -172,11 +189,12 @@
             </div>
             <div id="report-container"></div>
         </div>
+
         <div id="button-mais">
             <button onclick="window.location.reload();">Enviar Novamente</button>
         </div>
     </div>
-
+    
     <script>
         const submitButton = document.getElementById('submit-button');
         const form = document.getElementById('csv-upload-form');
