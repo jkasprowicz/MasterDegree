@@ -20,7 +20,7 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #444242;
+            background-color: #e5e5e5;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -31,11 +31,12 @@
             width: 80%;
             max-width: 600px;
             padding: 20px;
-            background-color: #c3c3c3;
+            background-color: #afaeae;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    
             text-align: center;
-            margin-bottom: 20px; /* Added space between containers */
+            margin-bottom: 60px; /* Added space between containers */
+            margin-top: 250px;
         }
 
     
@@ -146,6 +147,9 @@
             display: inline-block;
 
         }
+        .report-item p {
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -187,14 +191,25 @@
                     <span class="sr-only">Next</span>
                 </a>
             </div>
-            <div id="report-container"></div>
         </div>
-
-        <div id="button-mais">
-            <button onclick="window.location.reload();">Enviar Novamente</button>
+    </div>
+    <div class="container mt-4" id="report-container">
+        <h2>Resultados</h2>
+        <hr>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Your report content goes here -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
+    <div id="button-mais">
+        <button onclick="window.location.reload();">Enviar Novamente</button>
+    </div>
     <script>
         const submitButton = document.getElementById('submit-button');
         const form = document.getElementById('csv-upload-form');
@@ -272,9 +287,45 @@
                     });
 
                     const reportContent = Object.entries(classificationCounts)
-                        .map(([className, count]) => `<p>${className}: ${count}</p>`)
+                        .map(([className, count]) => `<tr><td>${className}</td><td>${count}</td></tr>`)
                         .join('');
-                    reportContainer.innerHTML = `<div class="report-item">${reportContent}</div>`;
+
+                    reportContainer.innerHTML = `<div class="report-item">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Células</th>
+                                                                <th>Contagem</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>${reportContent}</tbody>
+                                                    </table>
+                                                </div>`;
+
+
+                        // Check if total count is greater than 100 for percentage table
+                    const totalCount = Object.values(classificationCounts).reduce((acc, count) => acc + count, 0);
+
+                    if (totalCount > 100) {
+                        const percentageContent = Object.entries(classificationCounts)
+                            .map(([className, count]) => `<tr><td>${className}</td><td>${((count / totalCount) * 100).toFixed(2)}%</td></tr>`)
+                            .join('');
+
+                        const percentageTable = `<div class="report-item">
+                                                    <h3>Tabela - Conversão em Porcentagem</h3>
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Céluka</th>
+                                                                <th>Porcentagem</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>${percentageContent}</tbody>
+                                                    </table>
+                                                </div>`;
+
+                        reportContainer.innerHTML += percentageTable; // Append the percentage table
+                    }
                 };
 
                 imageObj.src = `/media/${imageData.image_path}`;
