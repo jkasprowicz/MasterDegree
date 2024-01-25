@@ -127,7 +127,6 @@ STATICFILES_DIRS = [
 # Note: Modify the STATIC_URL to include a leading slash '/'
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 200 * 1024 * 1024  # 200 MB, adjust as needed
