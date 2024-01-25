@@ -40,8 +40,8 @@ def upload_image(request):
 
             results_list = [] 
 
-            model_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth'
-            config_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml'
+            model_path = '/home/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth'
+            config_path = '/home/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml'
             predictor = load_detectron2_model(model_path, config_path)
 
             for image_file in images:

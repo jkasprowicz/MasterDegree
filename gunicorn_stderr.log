@@ -1,0 +1,74 @@
+[2024-01-22 20:41:51 +0000] [5954] [INFO] Starting gunicorn 21.2.0
+[2024-01-22 20:41:51 +0000] [5954] [INFO] Listening at: unix:/home/joaokasprowicz/MasterDegree/app.sock (5954)
+[2024-01-22 20:41:51 +0000] [5954] [INFO] Using worker: sync
+[2024-01-22 20:41:51 +0000] [5956] [INFO] Booting worker with pid: 5956
+[2024-01-22 20:41:52 +0000] [5957] [INFO] Booting worker with pid: 5957
+[2024-01-22 20:41:52 +0000] [5958] [INFO] Booting worker with pid: 5958
+[2024-01-22 20:43:52 +0000] [5956] [INFO] Worker exiting (pid: 5956)
+[2024-01-22 20:43:52 +0000] [5958] [INFO] Worker exiting (pid: 5958)
+[2024-01-22 20:43:52 +0000] [5957] [INFO] Worker exiting (pid: 5957)
+[2024-01-22 20:43:52 +0000] [5954] [INFO] Handling signal: term
+[2024-01-22 20:43:52 +0000] [5954] [ERROR] Worker (pid:5956) was sent SIGTERM!
+[2024-01-22 20:43:52 +0000] [5954] [ERROR] Worker (pid:5958) was sent SIGTERM!
+[2024-01-22 20:43:52 +0000] [5954] [ERROR] Worker (pid:5957) was sent SIGTERM!
+[2024-01-22 20:43:52 +0000] [5954] [INFO] Shutting down: Master
+[2024-01-22 20:44:02 +0000] [6022] [INFO] Starting gunicorn 21.2.0
+[2024-01-22 20:44:02 +0000] [6022] [INFO] Listening at: unix:/home/joaokasprowicz/MasterDegree/app.sock (6022)
+[2024-01-22 20:44:02 +0000] [6022] [INFO] Using worker: sync
+[2024-01-22 20:44:02 +0000] [6024] [INFO] Booting worker with pid: 6024
+[2024-01-22 20:44:02 +0000] [6025] [INFO] Booting worker with pid: 6025
+[2024-01-22 20:44:02 +0000] [6026] [INFO] Booting worker with pid: 6026
+Loading config /home/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml with yaml.unsafe_load. Your machine may be at risk if the file contains malicious content.
+Internal Server Error: /upload/
+Traceback (most recent call last):
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/joaokasprowicz/MasterDegree/MestradoExample/MestradoExample/views.py", line 45, in upload_image
+    predictor = load_detectron2_model(model_path, config_path)
+  File "/home/joaokasprowicz/MasterDegree/MestradoExample/MestradoExample/utils.py", line 12, in load_detectron2_model
+    predictor = DefaultPredictor(cfg)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/detectron2/engine/defaults.py", line 288, in __init__
+    checkpointer.load(cfg.MODEL.WEIGHTS)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/detectron2/checkpoint/detection_checkpoint.py", line 62, in load
+    ret = super().load(path, *args, **kwargs)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/fvcore/common/checkpoint.py", line 155, in load
+    checkpoint = self._load_file(path)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/detectron2/checkpoint/detection_checkpoint.py", line 99, in _load_file
+    loaded = self._torch_load(filename)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/detectron2/checkpoint/detection_checkpoint.py", line 114, in _torch_load
+    return super()._load_file(f)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/fvcore/common/checkpoint.py", line 252, in _load_file
+    return torch.load(f, map_location=torch.device("cpu"))
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/torch/serialization.py", line 1028, in load
+    return _legacy_load(opened_file, map_location, pickle_module, **pickle_load_args)
+  File "/home/joaokasprowicz/miniconda3/envs/new_env/lib/python3.8/site-packages/torch/serialization.py", line 1246, in _legacy_load
+    magic_number = pickle_module.load(f, **pickle_load_args)
+_pickle.UnpicklingError: invalid load key, 'v'.
+[2024-01-22 21:00:24 +0000] [6026] [INFO] Worker exiting (pid: 6026)
+[2024-01-22 21:00:24 +0000] [6025] [INFO] Worker exiting (pid: 6025)
+[2024-01-22 21:00:24 +0000] [6024] [INFO] Worker exiting (pid: 6024)
+[2024-01-22 21:00:24 +0000] [6022] [INFO] Handling signal: term
+[2024-01-22 21:00:24 +0000] [6022] [ERROR] Worker (pid:6026) was sent SIGTERM!
+[2024-01-22 21:00:24 +0000] [6022] [ERROR] Worker (pid:6024) was sent SIGTERM!
+[2024-01-22 21:00:24 +0000] [6022] [INFO] Shutting down: Master
+[2024-01-24 23:42:48 +0000] [723] [INFO] Starting gunicorn 21.2.0
+[2024-01-24 23:42:48 +0000] [723] [INFO] Listening at: unix:/home/joaokasprowicz/MasterDegree/app.sock (723)
+[2024-01-24 23:42:48 +0000] [723] [INFO] Using worker: sync
+[2024-01-24 23:42:48 +0000] [739] [INFO] Booting worker with pid: 739
+[2024-01-24 23:42:48 +0000] [740] [INFO] Booting worker with pid: 740
+[2024-01-24 23:42:48 +0000] [741] [INFO] Booting worker with pid: 741
+[2024-01-24 23:44:46 +0000] [741] [INFO] Worker exiting (pid: 741)
+[2024-01-24 23:44:46 +0000] [739] [INFO] Worker exiting (pid: 739)
+[2024-01-24 23:44:46 +0000] [740] [INFO] Worker exiting (pid: 740)
+[2024-01-24 23:44:46 +0000] [723] [INFO] Handling signal: term
+[2024-01-24 23:44:46 +0000] [723] [ERROR] Worker (pid:741) was sent SIGTERM!
+[2024-01-24 23:44:46 +0000] [723] [ERROR] Worker (pid:739) was sent SIGTERM!
+[2024-01-24 23:44:46 +0000] [723] [INFO] Shutting down: Master
+[2024-01-24 23:45:05 +0000] [1078] [INFO] Starting gunicorn 21.2.0
+[2024-01-24 23:45:05 +0000] [1078] [INFO] Listening at: unix:/home/joaokasprowicz/MasterDegree/app.sock (1078)
+[2024-01-24 23:45:05 +0000] [1078] [INFO] Using worker: sync
+[2024-01-24 23:45:05 +0000] [1080] [INFO] Booting worker with pid: 1080
+[2024-01-24 23:45:05 +0000] [1081] [INFO] Booting worker with pid: 1081
+[2024-01-24 23:45:05 +0000] [1082] [INFO] Booting worker with pid: 1082
