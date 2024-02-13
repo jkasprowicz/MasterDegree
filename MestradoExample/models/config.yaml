@@ -434,7 +434,7 @@ dictitems:
           __immutable__: false
           __new_allowed__: false
           __renamed_keys__: {}
-      WEIGHTS: /home/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth
+      WEIGHTS: /Users/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth
     state:
       __deprecated_keys__: !!set {}
       __immutable__: false

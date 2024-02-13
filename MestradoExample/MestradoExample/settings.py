@@ -129,10 +129,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024  # 200 MB, adjust as needed
-
-FILE_UPLOAD_MAX_MEMORY_SIZE = 500 * 1024 * 1024
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

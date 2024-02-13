@@ -40,8 +40,8 @@ def upload_image(request):
 
             results_list = [] 
 
-            model_path = '/home/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth'
-            config_path = '/home/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml'
+            model_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/model_final.pth'
+            config_path = '/Users/joaokasprowicz/MasterDegree/MestradoExample/models/config.yaml'
             predictor = load_detectron2_model(model_path, config_path)
 
             for image_file in images:
@@ -64,7 +64,6 @@ def upload_image(request):
                 cell_info = {}
 
 
-                # Set a distance threshold for considering two bounding boxes as the same cell
                 distance_threshold = 10.0
 
                 # Iterate through the predictions
@@ -86,7 +85,6 @@ def upload_image(request):
                 scores = [info['score'] for info in cell_info.values()]
                 pred_classes = [info['class'] for info in cell_info.values()]
 
-
                 results = {
                     'pred_boxes': pred_boxes,
                     'scores': scores,
@@ -102,4 +100,3 @@ def upload_image(request):
         form = ImageUploadForm()
 
     return render(request, 'upload_template.html', {'form': form})
-
